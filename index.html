@@ -6,22 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CivicLens - Reporta Baches</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- PWA Configuration -->
     <meta name="theme-color" content="#667eea">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CivicLens">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
-
-    <!-- Service Worker Registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(reg => console.log('Service Worker registrado'))
-                .catch(err => console.log('Error al registrar SW:', err));
-        }
-    </script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * {
@@ -58,12 +48,9 @@
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
             }
-
             50% {
                 transform: scale(1.05);
             }
@@ -72,6 +59,34 @@
         .header-text {
             flex: 1;
             text-align: left;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .user-name {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-logout {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #ee5a6f;
         }
 
         h1 {
@@ -218,6 +233,10 @@
                 <h1>CivicLens</h1>
                 <p class="subtitle">Sacude tu teléfono o haz click en el mapa para reportar un bache</p>
             </div>
+            <div class="user-info">
+                <span class="user-name" id="currentUserName"></span>
+                <button class="btn-logout" onclick="logout()">Salir</button>
+            </div>
         </div>
     </header>
 
@@ -244,57 +263,78 @@
     </div>
 
     <script>
+        // ==================== VERIFICACIÓN DE SESIÓN ====================
+        
+        let currentUser = null;
+
+        // Verificar sesión al cargar la página
+        window.addEventListener('DOMContentLoaded', function() {
+            const session = localStorage.getItem('civicLensSession');
+            if (!session) {
+                // No hay sesión, redirigir a login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Hay sesión, cargar usuario
+            currentUser = JSON.parse(session);
+            document.getElementById('currentUserName').textContent = '👤 ' + currentUser.name;
+            
+            // Inicializar la aplicación
+            initMap();
+            setTimeout(initAccelerometer, 1000);
+        });
+
+        // Cerrar sesión
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('civicLensSession');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // ==================== APLICACIÓN DE MAPAS ====================
+        
         let map;
         let userMarker;
         let reports = [];
         let reportCounter = 0;
         let watchId = null;
 
-        // Inicializar el mapa
         function initMap() {
-            // Coordenadas iniciales (Liberia, Costa Rica)
             const initialCoords = [10.6346, -85.4370];
-
             map = L.map('map').setView(initialCoords, 13);
-
-            // Agregar capa de tiles de OpenStreetMap
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors',
                 maxZoom: 19
             }).addTo(map);
-
-            // Evento de click en el mapa
+            
             map.on('click', function (e) {
                 addReport(e.latlng);
             });
-
-            // Intentar obtener ubicación del usuario
+            
             getUserLocation();
         }
 
-        // Obtener ubicación del usuario con seguimiento continuo
         function getUserLocation() {
             if (navigator.geolocation) {
-                // Usar watchPosition para seguimiento continuo
                 watchId = navigator.geolocation.watchPosition(
                     function (position) {
                         const userLatLng = [position.coords.latitude, position.coords.longitude];
 
-                        // Solo centrar el mapa la primera vez
                         if (!userMarker) {
                             map.setView(userLatLng, 15);
-
-                            // Crear el marcador por primera vez
+                            
                             const userIcon = L.divIcon({
                                 className: 'user-location',
                                 html: '<div style="background: #4A90E2; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>',
                                 iconSize: [20, 20]
                             });
-
+                            
                             userMarker = L.marker(userLatLng, { icon: userIcon }).addTo(map);
                             userMarker.bindPopup('<b>Tu ubicación</b>');
                         } else {
-                            // Solo actualizar la posición del marcador existente
                             userMarker.setLatLng(userLatLng);
                         }
                     },
@@ -310,7 +350,6 @@
             }
         }
 
-        // Centrar en ubicación del usuario
         function centerOnUser() {
             if (userMarker) {
                 map.setView(userMarker.getLatLng(), 15);
@@ -319,13 +358,11 @@
             }
         }
 
-        // Agregar reporte de bache
         function addReport(latlng) {
             reportCounter++;
             const reportId = 'report_' + reportCounter;
             const timestamp = new Date().toLocaleString('es-ES');
 
-            // Icono personalizado para el bache
             const potholeIcon = L.divIcon({
                 className: 'pothole-marker',
                 html: '<div style="background: #ff4757; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 18px;">⚠️</div>',
@@ -336,6 +373,7 @@
 
             const popupContent = `
                 <div class="popup-title">Bache Reportado</div>
+                <div class="popup-info">👤 ${currentUser.name}</div>
                 <div class="popup-info">📅 ${timestamp}</div>
                 <div class="popup-info">📍 Lat: ${latlng.lat.toFixed(5)}</div>
                 <div class="popup-info">📍 Lng: ${latlng.lng.toFixed(5)}</div>
@@ -345,18 +383,17 @@
             marker.bindPopup(popupContent);
             marker.openPopup();
 
-            // Guardar reporte
             reports.push({
                 id: reportId,
                 marker: marker,
                 latlng: latlng,
-                timestamp: timestamp
+                timestamp: timestamp,
+                user: currentUser.name
             });
 
             updateReportCount();
         }
 
-        // Eliminar un reporte específico
         function deleteReport(reportId) {
             const index = reports.findIndex(r => r.id === reportId);
             if (index !== -1) {
@@ -366,7 +403,6 @@
             }
         }
 
-        // Limpiar todos los reportes
         function clearAllReports() {
             if (reports.length === 0) {
                 alert('No hay reportes para eliminar');
@@ -382,17 +418,17 @@
             }
         }
 
-        // Actualizar contador de reportes
         function updateReportCount() {
             document.getElementById('reportCount').textContent = reports.length;
         }
 
-        // Detectar sacudidas del teléfono
+        // ==================== ACELERÓMETRO ====================
+        
         let lastX = 0, lastY = 0, lastZ = 0;
         let lastUpdate = 0;
         let lastShake = 0;
-        let SHAKE_THRESHOLD = 1000; // Umbral inicial de sacudida
-        const SHAKE_COOLDOWN = 3000; // 3 segundos entre sacudidas
+        let SHAKE_THRESHOLD = 1000;
+        const SHAKE_COOLDOWN = 3000;
 
         function adjustSensitivity(direction) {
             if (direction === 'up') {
@@ -410,7 +446,7 @@
                     const acc = e.accelerationIncludingGravity;
                     const curTime = new Date().getTime();
 
-                    if ((curTime - lastUpdate) > 200) {
+                    if ((curTime - lastUpdate) > 150) {
                         const diffTime = curTime - lastUpdate;
                         lastUpdate = curTime;
 
@@ -420,13 +456,11 @@
 
                         const speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
 
-                        // Solo crear reporte si hay sacudida Y han pasado 2 segundos desde la última
                         if (speed > SHAKE_THRESHOLD && userMarker && (curTime - lastShake) > SHAKE_COOLDOWN) {
                             lastShake = curTime;
                             const latlng = userMarker.getLatLng();
                             addReport(latlng);
 
-                            // Vibrar para confirmar
                             if (navigator.vibrate) {
                                 navigator.vibrate(200);
                             }
@@ -437,18 +471,26 @@
                         lastZ = z;
                     }
                 });
-                console.log('✅ Acelerómetro activado - Sacude el teléfono para reportar');
-            } else {
-                console.log('❌ Acelerómetro no disponible');
+                console.log('✅ Acelerómetro activado');
             }
         }
-
-        // Inicializar cuando se carga la página
-        window.onload = function () {
-            initMap();
-            setTimeout(initAccelerometer, 1000);
-        };
     </script>
 </body>
 
 </html>
+
+<!--
+<button onclick="adjustSensitivity('up')">➕</button>
+            <button onclick="adjustSensitivity('down')">➖</button>
+            <span id="currentThreshold">Umbral: 1000</span>
+
+            function adjustSensitivity(direction) {
+            if (direction === 'up') {
+                SHAKE_THRESHOLD -= 5;
+            } else {
+                SHAKE_THRESHOLD += 5;
+            }
+            document.getElementById('currentThreshold').textContent = 'Umbral: ' + SHAKE_THRESHOLD;
+            console.log('Nuevo umbral:', SHAKE_THRESHOLD);
+        }
+->

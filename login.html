@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicLens - Login</title>
+    <meta name="theme-color" content="#667eea">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo svg {
+            width: 80px;
+            height: 80px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .login-logo h1 {
+            color: #667eea;
+            font-size: 36px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        .login-logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .form-toggle {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-toggle a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .form-toggle a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #ff4757;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success-message {
+            background: #2ecc71;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-logo">
+            <svg width="80" height="80" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="25" cy="25" r="23" fill="#667eea" stroke="#764ba2" stroke-width="2" />
+                <circle cx="25" cy="25" r="18" fill="none" stroke="white" stroke-width="2" />
+                <circle cx="25" cy="25" r="12" fill="none" stroke="white" stroke-width="2" />
+                <path d="M 25 8 L 25 15" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M 25 35 L 25 42" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M 8 25 L 15 25" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M 35 25 L 42 25" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="25" cy="25" r="4" fill="white" />
+            </svg>
+            <h1>CivicLens</h1>
+            <p>Reporta y mejora tu ciudad</p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <!-- Formulario de Login -->
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">Correo Electrónico</label>
+                <input type="email" id="loginEmail" required placeholder="tu@email.com">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Contraseña</label>
+                <input type="password" id="loginPassword" required placeholder="Tu contraseña">
+            </div>
+            <button type="submit" class="btn-primary">Iniciar Sesión</button>
+            <div class="form-toggle">
+                ¿No tienes cuenta? <a onclick="showRegisterForm()">Regístrate aquí</a>
+            </div>
+        </form>
+
+        <!-- Formulario de Registro -->
+        <form id="registerForm" style="display: none;">
+            <div class="form-group">
+                <label for="registerName">Nombre de Usuario</label>
+                <input type="text" id="registerName" required placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">Correo Electrónico</label>
+                <input type="email" id="registerEmail" required placeholder="tu@email.com">
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Contraseña</label>
+                <input type="password" id="registerPassword" required placeholder="Mínimo 6 caracteres">
+            </div>
+            <div class="form-group">
+                <label for="registerPasswordConfirm">Confirmar Contraseña</label>
+                <input type="password" id="registerPasswordConfirm" required placeholder="Repite tu contraseña">
+            </div>
+            <button type="submit" class="btn-primary">Crear Cuenta</button>
+            <div class="form-toggle">
+                ¿Ya tienes cuenta? <a onclick="showLoginForm()">Inicia sesión aquí</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+
+</html>
