@@ -432,9 +432,9 @@
 
         function adjustSensitivity(direction) {
             if (direction === 'up') {
-                SHAKE_THRESHOLD -= 5;
+                SHAKE_THRESHOLD -= 20;
             } else {
-                SHAKE_THRESHOLD += 5;
+                SHAKE_THRESHOLD += 20;
             }
             document.getElementById('currentThreshold').textContent = 'Umbral: ' + SHAKE_THRESHOLD;
             console.log('Nuevo umbral:', SHAKE_THRESHOLD);
@@ -478,19 +478,3 @@
 </body>
 
 </html>
-
-<!--
-<button onclick="adjustSensitivity('up')">➕</button>
-            <button onclick="adjustSensitivity('down')">➖</button>
-            <span id="currentThreshold">Umbral: 1000</span>
-
-            function adjustSensitivity(direction) {
-            if (direction === 'up') {
-                SHAKE_THRESHOLD -= 5;
-            } else {
-                SHAKE_THRESHOLD += 5;
-            }
-            document.getElementById('currentThreshold').textContent = 'Umbral: ' + SHAKE_THRESHOLD;
-            console.log('Nuevo umbral:', SHAKE_THRESHOLD);
-        }
-->
