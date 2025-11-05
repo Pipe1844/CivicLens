@@ -38,6 +38,13 @@ function initMap() {
 
 // Mostrar opciones al hacer click en el mapa
 function showMapClickOptions(latlng) {
+    // Si está en modo reporte, crear reporte directamente
+    if (reportMode) {
+        addReport(latlng);
+        return;
+    }
+
+    // Si no, mostrar opciones
     const popup = L.popup()
         .setLatLng(latlng)
         .setContent(`
@@ -56,14 +63,45 @@ function showMapClickOptions(latlng) {
         .openOn(map);
 }
 
+// Cambiar modo de reporte
+window.toggleReportMode = function () {
+    reportMode = !reportMode;
+    const infoElement = document.getElementById('modeInfo');
+    const buttons = document.querySelectorAll('button');
+    let btn = null;
+
+    // Encontrar el botón de Modo Reporte
+    buttons.forEach(b => {
+        if (b.textContent.includes('Modo Reporte')) {
+            btn = b;
+        }
+    });
+
+    if (!btn) return;
+
+    if (reportMode) {
+        btn.style.background = '#ff4757';
+        btn.textContent = '⚠️ Modo Reporte: ON';
+        infoElement.textContent = '⚠️ MODO REPORTE ACTIVO: Click en el mapa reporta directamente';
+        infoElement.style.color = '#ff4757';
+        infoElement.style.fontWeight = 'bold';
+    } else {
+        btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        btn.textContent = '⚠️ Modo Reporte';
+        infoElement.textContent = '💡 Toca el mapa para ver opciones | Sacude el teléfono para reportar bache';
+        infoElement.style.color = '#666';
+        infoElement.style.fontWeight = 'normal';
+    }
+}
+
 // Agregar reporte desde el popup
-function addReportFromPopup(lat, lng) {
+window.addReportFromPopup = function (lat, lng) {
     map.closePopup();
     addReport(L.latLng(lat, lng));
 }
 
 // Crear ruta a un punto específico
-function routeToPoint(lat, lng) {
+window.routeToPoint = function (lat, lng) {
     map.closePopup();
 
     if (!userMarker) {
@@ -115,6 +153,10 @@ function centerOnUser() {
         getUserLocation();
     }
 }
+
+// Hacer funciones accesibles globalmente para los botones HTML
+window.centerOnUser = centerOnUser;
+window.logout = logout;
 
 // Cargar reportes desde Firebase
 async function loadReportsFromFirebase() {
@@ -303,7 +345,7 @@ function calculateRoute() {
         return;
     }
 
-    const destination = prompt('Ingresa las coordenadas de destino (lat,lng)\nEjemplo: 10.6346,-85.4370');
+    const destination = prompt('Ingresa las coordenadas de destino (lat,lng)\nEjemplo: 10.6346,-85.4370\n\nO haz click en el mapa y elige "Trazar Ruta"');
 
     if (!destination) return;
 
