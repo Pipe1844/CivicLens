@@ -126,11 +126,15 @@ if (document.getElementById('registerForm')) {
                 reportsCount: 0
             });
 
-            showSuccess('¡Cuenta creada exitosamente!');
+            showSuccess('¡Cuenta creada exitosamente! Iniciando sesión...');
 
-            // Limpiar formulario y mostrar login
+            // Limpiar formulario
             document.getElementById('registerForm').reset();
-            setTimeout(() => showLoginForm(), 1500);
+
+            // Redirigir automáticamente después de registro exitoso
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
 
         } catch (error) {
             console.error('Error en registro:', error);

@@ -221,10 +221,23 @@ async function addReport(latlng) {
 
         await reportsCollection.add(reportData);
 
-        // Actualizar contador de reportes del usuario
-        await usersCollection.doc(currentUser.uid).update({
-            reportsCount: firebase.firestore.FieldValue.increment(1)
-        });
+        // Verificar si el documento del usuario existe
+        const userDoc = await usersCollection.doc(currentUser.uid).get();
+
+        if (userDoc.exists) {
+            // Si existe, actualizar contador
+            await usersCollection.doc(currentUser.uid).update({
+                reportsCount: firebase.firestore.FieldValue.increment(1)
+            });
+        } else {
+            // Si no existe, crearlo
+            await usersCollection.doc(currentUser.uid).set({
+                name: currentUser.displayName,
+                email: currentUser.email,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                reportsCount: 1
+            });
+        }
 
         // Vibrar para confirmar
         if (navigator.vibrate) {
@@ -234,7 +247,7 @@ async function addReport(latlng) {
         console.log('✅ Reporte agregado exitosamente');
     } catch (error) {
         console.error('Error agregando reporte:', error);
-        alert('Error al crear reporte');
+        alert('Error al crear reporte: ' + error.message);
     }
 }
 
@@ -314,14 +327,14 @@ function clearRoute() {
 let lastX = 0, lastY = 0, lastZ = 0;
 let lastUpdate = 0;
 let lastShake = 0;
-let SHAKE_THRESHOLD = 1000;
+let SHAKE_THRESHOLD = 40;
 const SHAKE_COOLDOWN = 3000;
 
 function adjustSensitivity(direction) {
     if (direction === 'up') {
-        SHAKE_THRESHOLD -= 20;
+        SHAKE_THRESHOLD -= 5;
     } else {
-        SHAKE_THRESHOLD += 20;
+        SHAKE_THRESHOLD += 5;
     }
     document.getElementById('currentThreshold').textContent = 'Umbral: ' + SHAKE_THRESHOLD;
 }
