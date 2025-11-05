@@ -5,213 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CivicLens - Reporta Baches</title>
+
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#667eea">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CivicLens">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            flex-shrink: 0;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .header-text {
-            flex: 1;
-            text-align: left;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-left: auto;
-        }
-
-        .user-name {
-            color: #667eea;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .btn-logout {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-logout:hover {
-            background: #ee5a6f;
-        }
-
-        h1 {
-            color: #667eea;
-            font-size: 32px;
-            margin-bottom: 5px;
-            font-weight: bold;
-            letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .container {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        #map {
-            flex: 1;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            min-height: 400px;
-        }
-
-        .controls {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .info {
-            color: #666;
-            font-size: 13px;
-            text-align: center;
-        }
-
-        .stats {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .stat-number {
-            background: #667eea;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: bold;
-        }
-
-        .leaflet-popup-content {
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-
-        .popup-title {
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .popup-info {
-            font-size: 13px;
-            color: #666;
-            margin: 4px 0;
-        }
-
-        .delete-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 15px;
-            cursor: pointer;
-            margin-top: 8px;
-            font-size: 12px;
-        }
-
-        .delete-btn:hover {
-            background: #ee5a6f;
-        }
-    </style>
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 </head>
 
 <body>
@@ -231,7 +40,7 @@
             </div>
             <div class="header-text">
                 <h1>CivicLens</h1>
-                <p class="subtitle">Sacude tu teléfono o haz click en el mapa para reportar un bache</p>
+                <p class="subtitle">Reporta baches colaborativamente</p>
             </div>
             <div class="user-info">
                 <span class="user-name" id="currentUserName"></span>
@@ -245,234 +54,51 @@
 
         <div class="controls">
             <button onclick="centerOnUser()">📍 Mi Ubicación</button>
-            <button onclick="clearAllReports()">🗑️ Limpiar Todo</button>
-            <button onclick="adjustSensitivity('up')">➕</button>
-            <button onclick="adjustSensitivity('down')">➖</button>
-            <span id="currentThreshold">Umbral: 1000</span>
+            <button onclick="calculateRoute()">🗺️ Calcular Ruta</button>
+            <button onclick="clearRoute()">❌ Limpiar Ruta</button>
+            <button onclick="adjustSensitivity('down')">➕ Sensible</button>
+            <button onclick="adjustSensitivity('up')">➖ Insensible</button>
+            <span id="currentThreshold" style="font-size: 12px; color: #666;">Umbral: 40</span>
+        </div>
+
+        <div class="controls">
             <div class="stats">
                 <div class="stat-item">
-                    <span>Total reportes:</span>
+                    <span>Reportes validados:</span>
                     <span class="stat-number" id="reportCount">0</span>
                 </div>
             </div>
         </div>
 
         <div class="controls">
-            <p class="info">💡 Sacude el teléfono para reportar un bache en tu ubicación actual</p>
+            <p class="info">💡 Sacude el teléfono para reportar un bache | Los reportes necesitan 3+ validaciones para
+                mostrarse</p>
         </div>
     </div>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Routing Machine JS -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/map.js"></script>
+
+    <!-- Service Worker -->
     <script>
-        // ==================== VERIFICACIÓN DE SESIÓN ====================
-        
-        let currentUser = null;
-
-        // Verificar sesión al cargar la página
-        window.addEventListener('DOMContentLoaded', function() {
-            const session = localStorage.getItem('civicLensSession');
-            if (!session) {
-                // No hay sesión, redirigir a login
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            // Hay sesión, cargar usuario
-            currentUser = JSON.parse(session);
-            document.getElementById('currentUserName').textContent = '👤 ' + currentUser.name;
-            
-            // Inicializar la aplicación
-            initMap();
-            setTimeout(initAccelerometer, 1000);
-        });
-
-        // Cerrar sesión
-        function logout() {
-            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                localStorage.removeItem('civicLensSession');
-                window.location.href = 'login.html';
-            }
-        }
-
-        // ==================== APLICACIÓN DE MAPAS ====================
-        
-        let map;
-        let userMarker;
-        let reports = [];
-        let reportCounter = 0;
-        let watchId = null;
-
-        function initMap() {
-            const initialCoords = [10.6346, -85.4370];
-            map = L.map('map').setView(initialCoords, 13);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors',
-                maxZoom: 19
-            }).addTo(map);
-            
-            map.on('click', function (e) {
-                addReport(e.latlng);
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('✅ Service Worker registrado'))
+                    .catch(err => console.log('❌ Error al registrar SW:', err));
             });
-            
-            getUserLocation();
-        }
-
-        function getUserLocation() {
-            if (navigator.geolocation) {
-                watchId = navigator.geolocation.watchPosition(
-                    function (position) {
-                        const userLatLng = [position.coords.latitude, position.coords.longitude];
-
-                        if (!userMarker) {
-                            map.setView(userLatLng, 15);
-                            
-                            const userIcon = L.divIcon({
-                                className: 'user-location',
-                                html: '<div style="background: #4A90E2; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>',
-                                iconSize: [20, 20]
-                            });
-                            
-                            userMarker = L.marker(userLatLng, { icon: userIcon }).addTo(map);
-                            userMarker.bindPopup('<b>Tu ubicación</b>');
-                        } else {
-                            userMarker.setLatLng(userLatLng);
-                        }
-                    },
-                    function (error) {
-                        console.log('No se pudo obtener la ubicación:', error.message);
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        maximumAge: 10000,
-                        timeout: 5000
-                    }
-                );
-            }
-        }
-
-        function centerOnUser() {
-            if (userMarker) {
-                map.setView(userMarker.getLatLng(), 15);
-            } else {
-                getUserLocation();
-            }
-        }
-
-        function addReport(latlng) {
-            reportCounter++;
-            const reportId = 'report_' + reportCounter;
-            const timestamp = new Date().toLocaleString('es-ES');
-
-            const potholeIcon = L.divIcon({
-                className: 'pothole-marker',
-                html: '<div style="background: #ff4757; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 18px;">⚠️</div>',
-                iconSize: [30, 30]
-            });
-
-            const marker = L.marker(latlng, { icon: potholeIcon }).addTo(map);
-
-            const popupContent = `
-                <div class="popup-title">Bache Reportado</div>
-                <div class="popup-info">👤 ${currentUser.name}</div>
-                <div class="popup-info">📅 ${timestamp}</div>
-                <div class="popup-info">📍 Lat: ${latlng.lat.toFixed(5)}</div>
-                <div class="popup-info">📍 Lng: ${latlng.lng.toFixed(5)}</div>
-                <button class="delete-btn" onclick="deleteReport('${reportId}')">Eliminar reporte</button>
-            `;
-
-            marker.bindPopup(popupContent);
-            marker.openPopup();
-
-            reports.push({
-                id: reportId,
-                marker: marker,
-                latlng: latlng,
-                timestamp: timestamp,
-                user: currentUser.name
-            });
-
-            updateReportCount();
-        }
-
-        function deleteReport(reportId) {
-            const index = reports.findIndex(r => r.id === reportId);
-            if (index !== -1) {
-                map.removeLayer(reports[index].marker);
-                reports.splice(index, 1);
-                updateReportCount();
-            }
-        }
-
-        function clearAllReports() {
-            if (reports.length === 0) {
-                alert('No hay reportes para eliminar');
-                return;
-            }
-
-            if (confirm('¿Estás seguro de que quieres eliminar todos los reportes?')) {
-                reports.forEach(report => {
-                    map.removeLayer(report.marker);
-                });
-                reports = [];
-                updateReportCount();
-            }
-        }
-
-        function updateReportCount() {
-            document.getElementById('reportCount').textContent = reports.length;
-        }
-
-        // ==================== ACELERÓMETRO ====================
-        
-        let lastX = 0, lastY = 0, lastZ = 0;
-        let lastUpdate = 0;
-        let lastShake = 0;
-        let SHAKE_THRESHOLD = 1000;
-        const SHAKE_COOLDOWN = 3000;
-
-        function adjustSensitivity(direction) {
-            if (direction === 'up') {
-                SHAKE_THRESHOLD -= 20;
-            } else {
-                SHAKE_THRESHOLD += 20;
-            }
-            document.getElementById('currentThreshold').textContent = 'Umbral: ' + SHAKE_THRESHOLD;
-            console.log('Nuevo umbral:', SHAKE_THRESHOLD);
-        }
-
-        function initAccelerometer() {
-            if (window.DeviceMotionEvent) {
-                window.addEventListener('devicemotion', function (e) {
-                    const acc = e.accelerationIncludingGravity;
-                    const curTime = new Date().getTime();
-
-                    if ((curTime - lastUpdate) > 150) {
-                        const diffTime = curTime - lastUpdate;
-                        lastUpdate = curTime;
-
-                        const x = acc.x || 0;
-                        const y = acc.y || 0;
-                        const z = acc.z || 0;
-
-                        const speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
-
-                        if (speed > SHAKE_THRESHOLD && userMarker && (curTime - lastShake) > SHAKE_COOLDOWN) {
-                            lastShake = curTime;
-                            const latlng = userMarker.getLatLng();
-                            addReport(latlng);
-
-                            if (navigator.vibrate) {
-                                navigator.vibrate(200);
-                            }
-                        }
-
-                        lastX = x;
-                        lastY = y;
-                        lastZ = z;
-                    }
-                });
-                console.log('✅ Acelerómetro activado');
-            }
         }
     </script>
 </body>
