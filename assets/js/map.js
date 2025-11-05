@@ -7,6 +7,7 @@ let reportMarkers = new Map();
 let watchId = null;
 let currentUser = null;
 let routingControl = null;
+let reportMode = false; // Modo de reporte rápido
 
 // Inicializar aplicación con usuario autenticado
 function initializeApp(user) {
@@ -27,11 +28,50 @@ function initMap() {
         maxZoom: 19
     }).addTo(map);
 
+    // Evento de click en el mapa - mostrar opciones
     map.on('click', function (e) {
-        addReport(e.latlng);
+        showMapClickOptions(e.latlng);
     });
 
     getUserLocation();
+}
+
+// Mostrar opciones al hacer click en el mapa
+function showMapClickOptions(latlng) {
+    const popup = L.popup()
+        .setLatLng(latlng)
+        .setContent(`
+            <div style="text-align: center; padding: 10px;">
+                <div style="font-weight: bold; color: #667eea; margin-bottom: 10px;">¿Qué deseas hacer?</div>
+                <button onclick="addReportFromPopup(${latlng.lat}, ${latlng.lng})" 
+                        style="width: 100%; margin-bottom: 8px; background: #ff4757; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                    ⚠️ Reportar Bache Aquí
+                </button>
+                <button onclick="routeToPoint(${latlng.lat}, ${latlng.lng})" 
+                        style="width: 100%; background: #667eea; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                    🗺️ Trazar Ruta Aquí
+                </button>
+            </div>
+        `)
+        .openOn(map);
+}
+
+// Agregar reporte desde el popup
+function addReportFromPopup(lat, lng) {
+    map.closePopup();
+    addReport(L.latLng(lat, lng));
+}
+
+// Crear ruta a un punto específico
+function routeToPoint(lat, lng) {
+    map.closePopup();
+
+    if (!userMarker) {
+        alert('Esperando tu ubicación GPS...');
+        return;
+    }
+
+    showRoute(userMarker.getLatLng(), L.latLng(lat, lng));
 }
 
 // Obtener ubicación del usuario
@@ -327,14 +367,14 @@ function clearRoute() {
 let lastX = 0, lastY = 0, lastZ = 0;
 let lastUpdate = 0;
 let lastShake = 0;
-let SHAKE_THRESHOLD = 40;
+let SHAKE_THRESHOLD = 1000;
 const SHAKE_COOLDOWN = 3000;
 
 function adjustSensitivity(direction) {
     if (direction === 'up') {
-        SHAKE_THRESHOLD -= 5;
+        SHAKE_THRESHOLD -= 20;
     } else {
-        SHAKE_THRESHOLD += 5;
+        SHAKE_THRESHOLD += 20;
     }
     document.getElementById('currentThreshold').textContent = 'Umbral: ' + SHAKE_THRESHOLD;
 }

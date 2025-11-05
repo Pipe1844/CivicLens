@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="assets/css/main.css">
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#667eea">
@@ -54,7 +54,7 @@
 
         <div class="controls">
             <button onclick="centerOnUser()">📍 Mi Ubicación</button>
-            <button onclick="calculateRoute()">🗺️ Calcular Ruta</button>
+            <button onclick="toggleReportMode()">⚠️ Modo Reporte</button>
             <button onclick="clearRoute()">❌ Limpiar Ruta</button>
             <button onclick="adjustSensitivity('down')">➕ Sensible</button>
             <button onclick="adjustSensitivity('up')">➖ Insensible</button>
@@ -71,8 +71,7 @@
         </div>
 
         <div class="controls">
-            <p class="info">💡 Sacude el teléfono para reportar un bache | Los reportes necesitan 3+ validaciones para
-                mostrarse</p>
+            <p class="info" id="modeInfo">💡 Toca el mapa para ver opciones | Sacude el teléfono para reportar bache</p>
         </div>
     </div>
 
