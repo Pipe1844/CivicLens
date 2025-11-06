@@ -122,6 +122,14 @@ function getUserLocation() {
             function (position) {
                 const userLatLng = [position.coords.latitude, position.coords.longitude];
 
+                // Guardar ubicación real
+                realUserLocation = userLatLng;
+
+                // Si estamos en modo de prueba, no actualizar el marcador
+                if (testMode) {
+                    return;
+                }
+
                 if (!userMarker) {
                     map.setView(userLatLng, 15);
 
@@ -340,6 +348,96 @@ function updateReportCount() {
     document.getElementById('reportCount').textContent = reports.size;
 }
 
+// Activar/Desactivar modo de prueba
+window.toggleTestMode = function () {
+    testMode = !testMode;
+    const infoElement = document.getElementById('modeInfo');
+    const buttons = document.querySelectorAll('button');
+    let btn = null;
+
+    // Encontrar el botón de Modo Prueba
+    buttons.forEach(b => {
+        if (b.textContent.includes('Modo Prueba') || b.textContent.includes('🧪')) {
+            btn = b;
+        }
+    });
+
+    if (!btn) return;
+
+    if (testMode) {
+        // Activar modo de prueba
+        btn.style.background = '#ffa502';
+        btn.textContent = '🧪 Modo Prueba: ON';
+        infoElement.textContent = '🧪 MODO PRUEBA: Arrastra la cruz azul para simular movimiento';
+        infoElement.style.color = '#ffa502';
+        infoElement.style.fontWeight = 'bold';
+
+        // Crear marcador de prueba arrastrable
+        const currentPos = userMarker ? userMarker.getLatLng() : (realUserLocation ? realUserLocation : map.getCenter());
+
+        const testIcon = L.divIcon({
+            className: 'test-marker',
+            html: '<div style="background: #ffa502; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: move;">➕</div>',
+            iconSize: [30, 30]
+        });
+
+        testMarker = L.marker(currentPos, {
+            icon: testIcon,
+            draggable: true
+        }).addTo(map);
+
+        testMarker.bindPopup('<b>Posición de prueba</b><br>Arrastra para mover');
+
+        // Al arrastrar, actualizar la posición del userMarker
+        testMarker.on('drag', function (e) {
+            if (userMarker) {
+                userMarker.setLatLng(e.target.getLatLng());
+            }
+        });
+
+        testMarker.on('dragend', function (e) {
+            if (userMarker) {
+                userMarker.setLatLng(e.target.getLatLng());
+            }
+            console.log('Nueva posición de prueba:', e.target.getLatLng());
+        });
+
+        // Ocultar o cambiar el marcador real
+        if (userMarker) {
+            userMarker.setOpacity(0.5);
+        }
+
+    } else {
+        // Desactivar modo de prueba
+        btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        btn.textContent = '🧪 Modo Prueba';
+
+        if (reportMode) {
+            infoElement.textContent = '⚠️ MODO REPORTE ACTIVO: Click en el mapa reporta directamente';
+            infoElement.style.color = '#ff4757';
+        } else {
+            infoElement.textContent = '💡 Toca el mapa para ver opciones | Sacude el teléfono para reportar bache';
+            infoElement.style.color = '#666';
+        }
+        infoElement.style.fontWeight = 'normal';
+
+        // Eliminar marcador de prueba
+        if (testMarker) {
+            map.removeLayer(testMarker);
+            testMarker = null;
+        }
+
+        // Restaurar marcador real
+        if (userMarker) {
+            userMarker.setOpacity(1);
+            if (realUserLocation) {
+                userMarker.setLatLng(realUserLocation);
+                map.setView(realUserLocation, map.getZoom());
+            }
+        }
+    }
+}
+
 // Exponer funciones globalmente para botones HTML
 window.clearRoute = clearRoute;
 window.adjustSensitivity = adjustSensitivity;
@@ -417,14 +515,14 @@ function clearRoute() {
 let lastX = 0, lastY = 0, lastZ = 0;
 let lastUpdate = 0;
 let lastShake = 0;
-let SHAKE_THRESHOLD = 1000;
+let SHAKE_THRESHOLD = 40;
 const SHAKE_COOLDOWN = 3000;
 
 function adjustSensitivity(direction) {
     if (direction === 'up') {
-        SHAKE_THRESHOLD -= 20;
+        SHAKE_THRESHOLD -= 5;
     } else {
-        SHAKE_THRESHOLD += 20;
+        SHAKE_THRESHOLD += 5;
     }
     document.getElementById('currentThreshold').textContent = 'Umbral: ' + SHAKE_THRESHOLD;
 }
