@@ -352,23 +352,15 @@ function updateReportCount() {
 window.toggleTestMode = function () {
     testMode = !testMode;
     const infoElement = document.getElementById('modeInfo');
-    const buttons = document.querySelectorAll('button');
-    let btn = null;
-
-    // Encontrar el botón de Modo Prueba
-    buttons.forEach(b => {
-        if (b.textContent.includes('Modo Prueba') || b.textContent.includes('🧪')) {
-            btn = b;
-        }
-    });
+    const btn = document.getElementById('testModeBtn');
 
     if (!btn) return;
 
     if (testMode) {
         // Activar modo de prueba
         btn.style.background = '#ffa502';
-        btn.textContent = '🧪 Modo Prueba: ON';
-        infoElement.textContent = '🧪 MODO PRUEBA: Arrastra la cruz azul para simular movimiento';
+        btn.textContent = 'Modo Prueba: ON';
+        infoElement.textContent = '🧪 MODO PRUEBA: Arrastra la cruz para simular movimiento';
         infoElement.style.color = '#ffa502';
         infoElement.style.fontWeight = 'bold';
 
@@ -410,13 +402,13 @@ window.toggleTestMode = function () {
     } else {
         // Desactivar modo de prueba
         btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-        btn.textContent = '🧪 Modo Prueba';
+        btn.textContent = 'Modo Prueba';
 
         if (reportMode) {
-            infoElement.textContent = '⚠️ MODO REPORTE ACTIVO: Click en el mapa reporta directamente';
+            infoElement.textContent = '⚠️ MODO REPORTE: Click en el mapa reporta directamente';
             infoElement.style.color = '#ff4757';
         } else {
-            infoElement.textContent = '💡 Toca el mapa para ver opciones | Sacude el teléfono para reportar bache';
+            infoElement.textContent = 'Toca el mapa para ver opciones';
             infoElement.style.color = '#666';
         }
         infoElement.style.fontWeight = 'normal';

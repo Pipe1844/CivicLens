@@ -14,7 +14,7 @@ body {
 
 header {
     background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
+    padding: 15px 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -78,7 +78,7 @@ header {
 
 h1 {
     color: #667eea;
-    font-size: 32px;
+    font-size: 28px;
     margin-bottom: 5px;
     font-weight: bold;
     letter-spacing: -0.5px;
@@ -86,15 +86,16 @@ h1 {
 
 .subtitle {
     color: #666;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .container {
     flex: 1;
-    padding: 20px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
+    position: relative;
 }
 
 #map {
@@ -104,66 +105,168 @@ h1 {
     min-height: 400px;
 }
 
-.controls {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+/* Menu hamburguesa */
+.menu-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    z-index: 1000;
+    transition: transform 0.3s, box-shadow 0.3s;
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+}
+
+.menu-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+}
+
+.menu-toggle.active {
+    background: #ff4757;
+}
+
+/* Panel de controles */
+.controls-panel {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    max-width: 320px;
+    width: calc(100% - 40px);
+    transform: translateY(20px) scale(0.9);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.controls-panel.active {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.controls-panel h3 {
+    color: #667eea;
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 10px;
+}
+
+.control-section {
+    margin-bottom: 15px;
+}
+
+.control-section:last-child {
+    margin-bottom: 0;
+}
+
+.control-section-title {
+    font-size: 12px;
+    color: #999;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: bold;
 }
 
 button {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
+    padding: 12px 20px;
+    border-radius: 10px;
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+    width: 100%;
+    margin-bottom: 8px;
+    text-align: left;
 }
 
 button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
 button:active {
     transform: translateY(0);
 }
 
+button:last-child {
+    margin-bottom: 0;
+}
+
+/* Botones de ajuste de sensibilidad */
+.sensitivity-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.sensitivity-controls button {
+    flex: 1;
+    margin-bottom: 0;
+    padding: 10px;
+    text-align: center;
+}
+
+.sensitivity-controls span {
+    color: #666;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* Información del modo */
+.info-panel {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
 .info {
     color: #666;
     font-size: 13px;
     text-align: center;
+    margin: 0;
 }
 
-.stats {
+/* Estadísticas */
+.stats-panel {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
-    gap: 20px;
     justify-content: center;
-    font-size: 14px;
-    color: #555;
-}
-
-.stat-item {
-    display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
 }
 
 .stat-number {
     background: #667eea;
     color: white;
-    padding: 4px 10px;
+    padding: 6px 12px;
     border-radius: 12px;
     font-weight: bold;
+    font-size: 16px;
 }
 
 .leaflet-popup-content {
@@ -210,4 +313,52 @@ button:active {
 .route-marker {
     background: none;
     border: none;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+    h1 {
+        font-size: 32px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+
+    .user-name {
+        display: inline;
+    }
+
+    .controls-panel {
+        max-width: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content {
+        gap: 10px;
+    }
+
+    .logo svg {
+        width: 40px;
+        height: 40px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    .subtitle {
+        font-size: 11px;
+    }
+
+    .user-name {
+        display: none;
+    }
+
+    .menu-toggle {
+        width: 55px;
+        height: 55px;
+        font-size: 22px;
+    }
 }

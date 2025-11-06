@@ -52,30 +52,46 @@
     <div class="container">
         <div id="map"></div>
 
-        <div class="controls">
-            <button onclick="centerOnUser()">📍 Mi Ubicación</button>
-            <button onclick="toggleTestMode()">🧪 Modo Prueba</button>
-            <button onclick="toggleReportMode()">⚠️ Modo Reporte</button>
-            <button onclick="clearRoute()">❌ Limpiar Ruta</button>
+        <!-- Panel de información -->
+        <div class="info-panel">
+            <p class="info" id="modeInfo">Toca el mapa para ver opciones</p>
         </div>
 
-        <div class="controls">
-            <button onclick="adjustSensitivity('down')">➕ Sensible</button>
-            <button onclick="adjustSensitivity('up')">➖ Insensible</button>
-            <span id="currentThreshold" style="font-size: 12px; color: #666;">Umbral: 1000</span>
+        <!-- Estadísticas -->
+        <div class="stats-panel">
+            <span style="color: #666; font-size: 14px;">Reportes:</span>
+            <span class="stat-number" id="reportCount">0</span>
         </div>
 
-        <div class="controls">
-            <div class="stats">
-                <div class="stat-item">
-                    <span>Reportes validados:</span>
-                    <span class="stat-number" id="reportCount">0</span>
+        <!-- Botón hamburguesa -->
+        <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
+            ☰
+        </button>
+
+        <!-- Panel de controles (oculto por defecto) -->
+        <div class="controls-panel" id="controlsPanel">
+            <h3>Controles</h3>
+
+            <div class="control-section">
+                <div class="control-section-title">Navegación</div>
+                <button onclick="centerOnUser(); closeMenu();">Mi Ubicación</button>
+                <button onclick="clearRoute(); closeMenu();">Limpiar Ruta</button>
+            </div>
+
+            <div class="control-section">
+                <div class="control-section-title">Modos</div>
+                <button id="testModeBtn" onclick="toggleTestMode()">Modo Prueba</button>
+                <button id="reportModeBtn" onclick="toggleReportMode()">Modo Reporte</button>
+            </div>
+
+            <div class="control-section">
+                <div class="control-section-title">Sensibilidad Acelerómetro</div>
+                <div class="sensitivity-controls">
+                    <button onclick="adjustSensitivity('down')">+ Sensible</button>
+                    <span id="currentThreshold">1000</span>
+                    <button onclick="adjustSensitivity('up')">- Sensible</button>
                 </div>
             </div>
-        </div>
-
-        <div class="controls">
-            <p class="info" id="modeInfo">💡 Toca el mapa para ver opciones | Sacude el teléfono para reportar bache</p>
         </div>
     </div>
 
