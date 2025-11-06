@@ -70,32 +70,66 @@ function showMapClickOptions(latlng) {
 window.toggleReportMode = function () {
     reportMode = !reportMode;
     const infoElement = document.getElementById('modeInfo');
-    const buttons = document.querySelectorAll('button');
-    let btn = null;
-
-    // Encontrar el botón de Modo Reporte
-    buttons.forEach(b => {
-        if (b.textContent.includes('Modo Reporte')) {
-            btn = b;
-        }
-    });
+    const btn = document.getElementById('reportModeBtn');
 
     if (!btn) return;
 
     if (reportMode) {
         btn.style.background = '#ff4757';
-        btn.textContent = '⚠️ Modo Reporte: ON';
-        infoElement.textContent = '⚠️ MODO REPORTE ACTIVO: Click en el mapa reporta directamente';
+        btn.textContent = 'Modo Reporte: ON';
+        infoElement.textContent = '⚠️ MODO REPORTE: Click en el mapa reporta directamente';
         infoElement.style.color = '#ff4757';
         infoElement.style.fontWeight = 'bold';
     } else {
         btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-        btn.textContent = '⚠️ Modo Reporte';
-        infoElement.textContent = '💡 Toca el mapa para ver opciones | Sacude el teléfono para reportar bache';
-        infoElement.style.color = '#666';
+        btn.textContent = 'Modo Reporte';
+
+        if (testMode) {
+            infoElement.textContent = '🧪 MODO PRUEBA: Arrastra la cruz para simular movimiento';
+            infoElement.style.color = '#ffa502';
+        } else {
+            infoElement.textContent = 'Toca el mapa para ver opciones';
+            infoElement.style.color = '#666';
+        }
         infoElement.style.fontWeight = 'normal';
     }
 }
+
+// Control del menú hamburguesa
+window.toggleMenu = function () {
+    const panel = document.getElementById('controlsPanel');
+    const btn = document.getElementById('menuToggle');
+
+    panel.classList.toggle('active');
+    btn.classList.toggle('active');
+
+    if (panel.classList.contains('active')) {
+        btn.textContent = '✕';
+    } else {
+        btn.textContent = '☰';
+    }
+}
+
+window.closeMenu = function () {
+    const panel = document.getElementById('controlsPanel');
+    const btn = document.getElementById('menuToggle');
+
+    panel.classList.remove('active');
+    btn.classList.remove('active');
+    btn.textContent = '☰';
+}
+
+// Cerrar menú al hacer click fuera
+document.addEventListener('click', function (e) {
+    const panel = document.getElementById('controlsPanel');
+    const btn = document.getElementById('menuToggle');
+
+    if (panel && panel.classList.contains('active')) {
+        if (!panel.contains(e.target) && !btn.contains(e.target)) {
+            closeMenu();
+        }
+    }
+});
 
 // Agregar reporte desde el popup
 window.addReportFromPopup = function (lat, lng) {
