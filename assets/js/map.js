@@ -8,6 +8,9 @@ let watchId = null;
 let currentUser = null;
 let routingControl = null;
 let reportMode = false; // Modo de reporte rápido
+let testMode = false; // Modo de prueba sin GPS
+let realUserLocation = null; // Guardar ubicación real del GPS
+let testMarker = null; // Marcador de prueba
 
 // Inicializar aplicación con usuario autenticado
 function initializeApp(user) {
@@ -336,6 +339,11 @@ async function addReport(latlng) {
 function updateReportCount() {
     document.getElementById('reportCount').textContent = reports.size;
 }
+
+// Exponer funciones globalmente para botones HTML
+window.clearRoute = clearRoute;
+window.adjustSensitivity = adjustSensitivity;
+window.calculateRoute = calculateRoute;
 
 // ==================== SISTEMA DE RUTAS ====================
 
