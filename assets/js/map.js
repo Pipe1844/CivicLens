@@ -515,14 +515,14 @@ function clearRoute() {
 let lastX = 0, lastY = 0, lastZ = 0;
 let lastUpdate = 0;
 let lastShake = 0;
-let SHAKE_THRESHOLD = 40;
+let SHAKE_THRESHOLD = 1000;
 const SHAKE_COOLDOWN = 3000;
 
 function adjustSensitivity(direction) {
     if (direction === 'up') {
-        SHAKE_THRESHOLD -= 5;
+        SHAKE_THRESHOLD -= 20;
     } else {
-        SHAKE_THRESHOLD += 5;
+        SHAKE_THRESHOLD += 20;
     }
     document.getElementById('currentThreshold').textContent = 'Umbral: ' + SHAKE_THRESHOLD;
 }
